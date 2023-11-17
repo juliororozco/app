@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/data/services/authService.dart';
 import 'package:frontend/domain/controllers/poductController.dart';
+import 'package:frontend/domain/controllers/cartController.dart';
 import 'package:get/get.dart';
 
 class ProductList extends StatelessWidget {
@@ -8,17 +10,19 @@ class ProductList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ProductController pc = Get.find();
+    CartController cartController = Get.find();
     pc.listProducts();
+
     return Scaffold(
       backgroundColor: Colors.grey[200],
       body: ListView(
         children: [
           GridView.builder(
-            shrinkWrap: true, // Para que el GridView se ajuste al contenido
+            shrinkWrap: true,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3, // Tres tarjetas por fila
-              crossAxisSpacing: 8.0, // Espaciado horizontal
-              mainAxisSpacing: 120.0, // Espaciado vertical
+              crossAxisCount: 3,
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 120.0,
             ),
             itemCount: pc.listaGeneralProduct.length,
             itemBuilder: (BuildContext context, int index) {
@@ -40,7 +44,6 @@ class ProductList extends StatelessWidget {
                       height: 100,
                       width: 100,
                       child: ClipRRect(
-                        // ignore: prefer_const_constructors
                         borderRadius: BorderRadius.only(
                           topLeft: const Radius.circular(10.0),
                           topRight: const Radius.circular(10.0),
@@ -84,8 +87,20 @@ class ProductList extends StatelessWidget {
                             ),
                           const SizedBox(height: 4),
                           ElevatedButton(
-                            onPressed: () {
-                              // Agregar lógica para agregar al carrito aquí
+                            onPressed: () async {
+                              // Obtener el token antes de agregar al carrito
+                              AuthService authService = AuthService();
+                              String? token = await authService.getToken();
+
+                              if (token != null) {
+                              } else {
+                                // Mostrar mensaje o redirigir a pantalla de inicio de sesión si no hay token
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'Inicia sesión para agregar al carrito')),
+                                );
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               primary: Colors.blue,

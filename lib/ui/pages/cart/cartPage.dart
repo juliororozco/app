@@ -9,7 +9,7 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   final CartController cartController = CartController();
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

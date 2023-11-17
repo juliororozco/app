@@ -1,5 +1,5 @@
 class Product {
-  final String id;
+  final String? id;
   final String name;
   final String category;
   final List<String> imageUrl;
@@ -10,7 +10,7 @@ class Product {
   final int? v;
 
   Product({
-    required this.id,
+    this.id,
     required this.name,
     required this.category,
     required this.imageUrl,
@@ -24,18 +24,16 @@ class Product {
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
       id: json['_id'],
-      name: json['name'],
-      category: json['category'],
-      imageUrl: List<String>.from(json['imageUrl'].map((x) => x)),
-      reference: json['reference'],
-      price: json['price'].toDouble(),
-      oldPrice: json['oldPrice']?.toDouble(),
-      description: json['description'],
-      v: json['__v'],
+      name: json['name'] ?? '',
+      category: json['category'] ?? '',
+      imageUrl: List<String>.from(json['imageUrl']?.map((x) => x) ?? []),
+      reference: json['reference'] ?? '',
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      oldPrice: (json['oldPrice'] as num?)?.toDouble(),
+      description: json['description'] ?? '',
+      v: json['__v'] as int?,
     );
   }
-
-  get numRatings => null;
 
   Map<String, dynamic> toJson() {
     return {

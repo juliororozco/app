@@ -1,56 +1,64 @@
 import 'dart:convert';
-import 'package:frontend/domain/models/cart.dart';
 import 'package:http/http.dart' as http;
 
 class CartService {
-  static const String _baseUrl =
-      'http://localhost:8080/api/cart'; // Reemplaza 'tuPuerto' con el puerto correcto de tu servidor
+  static const String baseUrl = 'http://localhost:8080/api/cart'; // Reemplaza con la URL de tu backend
 
-  Future<void> addToCart(String userId, String cartItem, int quantity) async {
+  static Future<void> addToCart(String userId, String cartItem, int quantity) async {
+    final String apiUrl = '$baseUrl';
+
+    Map<String, dynamic> requestData = {
+      'userId': userId,
+      'cartItem': cartItem,
+      'quantity': quantity,
+    };
+
     try {
-      final response = await http.post(
-        Uri.parse('$_baseUrl'),
-        body: json.encode({
-          'userId': userId,
-          'cartItem': cartItem,
-          'quantity': quantity,
-        }),
+      var response = await http.post(
+        Uri.parse(apiUrl),
+        body: json.encode(requestData),
         headers: {'Content-Type': 'application/json'},
       );
 
-      if (response.statusCode != 200) {
-        throw 'Error al agregar productos al carrito';
+      if (response.statusCode == 200) {
+        // Manejar la respuesta exitosa
+      } else {
+        // Manejar errores de respuesta
       }
     } catch (error) {
-      throw 'Error al agregar productos al carrito: $error';
+      // Manejar errores de red
     }
   }
 
-  Future<Cart> getCart(String userId) async {
+  static Future<void> getCart(String userId) async {
+    final String apiUrl = '$baseUrl/find?userId=$userId'; // Reemplaza con la URL de tu backend
+
     try {
-      final response = await http.get(Uri.parse('$_baseUrl/find/$userId'));
+      var response = await http.get(Uri.parse(apiUrl));
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return Cart.fromJson(data);
+        // Manejar la respuesta exitosa
       } else {
-        throw 'Error al obtener el carrito de compras';
+        // Manejar errores de respuesta
       }
     } catch (error) {
-      throw 'Error al obtener el carrito de compras: $error';
+      // Manejar errores de red
     }
   }
 
-  Future<void> deleteItem(String userId, String cartItemId) async {
-    try {
-      final response = await http
-          .delete(Uri.parse('$_baseUrl/$cartItemId'));
+  static Future<void> deleteItem(String cartItemId) async {
+    final String apiUrl = '$baseUrl/delete-item/$cartItemId'; // Reemplaza con la URL de tu backend
 
-      if (response.statusCode != 200) {
-        throw 'Error al eliminar el producto del carrito';
+    try {
+      var response = await http.delete(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        // Manejar la respuesta exitosa
+      } else {
+        // Manejar errores de respuesta
       }
     } catch (error) {
-      throw 'Error al eliminar el producto del carrito: $error';
+      // Manejar errores de red
     }
   }
 }

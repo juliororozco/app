@@ -10,6 +10,8 @@ class CreateProduct extends StatelessWidget {
   final TextEditingController imageUrlController = TextEditingController();
   final TextEditingController oldPriceController = TextEditingController();
   final TextEditingController referenceController = TextEditingController();
+  final TextEditingController categoryController =
+      TextEditingController(); // Agregado
 
   CreateProduct({super.key});
 
@@ -52,6 +54,11 @@ class CreateProduct extends StatelessWidget {
                 controller: referenceController,
                 decoration: const InputDecoration(labelText: 'Referencia'),
               ),
+              TextFormField(
+                // Agregado
+                controller: categoryController,
+                decoration: const InputDecoration(labelText: 'Categoría'),
+              ),
               ElevatedButton(
                 onPressed: () {
                   createProduct(context);
@@ -65,7 +72,7 @@ class CreateProduct extends StatelessWidget {
     );
   }
 
-  void createProduct(BuildContext context) {
+  void createProduct(BuildContext context) async {
     final ProductController pc = Get.find<ProductController>();
 
     // Recopila los valores de los controladores
@@ -75,21 +82,23 @@ class CreateProduct extends StatelessWidget {
     final String imageUrl = imageUrlController.text;
     final double oldPrice = double.tryParse(oldPriceController.text) ?? 0.0;
     final String reference = referenceController.text;
+    final String category = categoryController.text; // Agregado
 
     // Crea un nuevo producto
     final newProduct = Product(
-      id: '', // El ID se generará automáticamente por el servidor
+      id: '', // o puedes simplemente omitir este campo
       name: name,
       price: price,
       description: description,
       imageUrl: [imageUrl],
       oldPrice: oldPrice,
       reference: reference,
-      v: 0, category: '',
+      v: 0,
+      category: category,
     );
 
     // Llama al controlador para crear el producto
-    pc.createProduct(newProduct);
+    await pc.createProduct(newProduct);
 
     // Limpia los campos después de crear el producto
     nameController.clear();
@@ -98,10 +107,12 @@ class CreateProduct extends StatelessWidget {
     imageUrlController.clear();
     oldPriceController.clear();
     referenceController.clear();
+    categoryController.clear(); // Agregado
 
-    // Muestra un mensaje de éxito o redirige a otra pantalla
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Producto creado con éxito')),
-    );
+    // Redirige al usuario al home después de crear el producto
+    Get.offAllNamed('/home');
+
+    // Muestra un mensaje de éxito
+    Get.snackbar('Éxito', 'Producto creado con éxito');
   }
 }

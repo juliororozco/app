@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/ui/pages/cart/cartPage.dart';
 import 'package:get/get.dart';
 import 'package:frontend/ui/Products/listProduct.dart';
 import 'package:frontend/data/services/authService.dart'; // Asegúrate de importar tu servicio
@@ -6,7 +7,7 @@ import 'package:frontend/data/services/authService.dart'; // Asegúrate de impor
 class Menu extends StatelessWidget {
   final AuthService _authService = AuthService(); // Instancia del servicio
 
-   Menu({Key? key}) : super(key: key);
+  Menu({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +102,12 @@ class Menu extends StatelessWidget {
                   Get.toNamed('/login');
                   break;
                 case 3:
-                  Get.toNamed('/cart');
+                  if (await _authService.getToken() != null) {
+                    // Muestra el carrito al tocar la opción
+                    Get.to(CartPage());
+                  } else {
+                    Get.toNamed('/login');
+                  }
                   break;
               }
             },
